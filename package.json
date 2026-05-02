@@ -1,0 +1,26 @@
+{
+  "name": "@wyella/schemas",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "description": "Shared Zod primitives substrate for the Wyella platform (OPE-139). AMOS is the first canonical consumer.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
