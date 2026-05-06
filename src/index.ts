@@ -1,16 +1,21 @@
 /**
- * @wyella/schemas — shared Zod primitives substrate.
+ * @wyella/schemas — shared Zod schemas substrate.
  *
- * Sprint 0 D2 (PB-AMOS-002, OPE-139). Empty namespace shell. AMOS is the
- * first canonical consumer; future schema packages (`@wyella/cpil-schema`,
- * `@wyella/oeil-schema`, ...) follow the same re-export pattern as the
- * platform-wide consolidation proceeds.
+ * Sprint 0 D2 shell created the package; PB-AMOS-S02-D5-1-IMPL
+ * (2026-05-06) populated the first canonical types (parsers/) and
+ * relocated the package from platform-db's workspace into a dedicated
+ * cross-repo dependency at github.com/wyella/schemas.
  *
- * The architectural commitment to Zod-as-source-of-truth (WS-C intent) is
- * honoured for AMOS without requiring retro-fit of the existing 28+ repos
- * that validate inline.
+ * Subordinate to OPE-139 (package shell) and OPE-153 (cross-repo
+ * consumption mechanism). AMOS is the first canonical consumer.
  *
- * Population begins in Sprint 1 as AMOS schema lands.
+ * Consumption pattern (consumer package.json):
+ *
+ *   "@wyella/schemas": "github:wyella/schemas#main"
+ *
+ * Main-branch tracking: each merge here reaches all consumers on next
+ * install. Revisit pinning style at the third cross-repo consumer
+ * per OPE-153 sub-finding.
  */
 
 import { z } from 'zod';
@@ -19,11 +24,6 @@ import { z } from 'zod';
 export { z };
 
 /** Package metadata constant; useful for runtime version assertions. */
-export const SCHEMAS_VERSION = '0.0.1' as const;
+export const SCHEMAS_VERSION = '0.1.0' as const;
 
-// Future shape — populated in Sprint 1+ as AMOS-then-other-verticals expose
-// shared primitives:
-//
-//   export * from './primitives/index.js';     // Uuid, Email, IsoDate, ...
-//   export * from './tenant/index.js';         // CustomerId, SiteId, RoleCode, ...
-//   export * from './audit/index.js';          // AuditEvent, ActorContext, ...
+export * from './parsers/index.js';
