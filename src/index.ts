@@ -24,6 +24,7 @@ import { z } from 'zod';
 export { z };
 
 /** Package metadata constant; useful for runtime version assertions. */
-export const SCHEMAS_VERSION = '0.1.0' as const;
+export const SCHEMAS_VERSION = '0.2.0' as const;
 
 export * from './parsers/index.js';
+export * from './applicability/index.js';

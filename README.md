@@ -2,7 +2,7 @@
 
 **Purpose.** Shared Zod schemas substrate for the Wyella platform. Honours the WS-C intent of Zod-as-source-of-truth in a single shared package, decoupled from any specific app's schema concerns.
 
-**Status.** Populated 2026-05-06 with the canonical parsers types extracted from `wyella/amos-engine` per OPE-150 sub-finding (w). Cross-repo consumption mechanism: git-URL dependency tracking `main`, per OPE-153.
+**Status.** Populated 2026-05-06 with the canonical parsers types extracted from `wyella/amos-engine` per OPE-150 sub-finding (w). PB-AMOS-S02-D3 (2026-05-08) added the applicability rule expression grammar consumed by the AMOS rule editor + engine route handlers + the PL/pgSQL matview evaluator. Cross-repo consumption mechanism: git-URL dependency tracking `main`, per OPE-153.
 
 **Authority.** OPE-139 (package shell created Sprint 0); OPE-153 (cross-repo consumption mechanism, James-authorised 2026-05-06: dedicated repo, main-branch tracking).
 
@@ -10,23 +10,37 @@
 
 ```ts
 import {
-  // Schemas
+  // Parsers (Sprint 1 D5.1)
   ParserFormatSchema,
   ParsedSectionSchema,
   ParsedTableSchema,
   ParsedDocumentSchema,
-  // Types (z.infer aliases)
   ParserFormat,
   ParsedSection,
   ParsedTable,
   ParsedDocument,
+  // Applicability (Sprint 2 D3)
+  ApplicabilityRuleExpressionSchema,
+  PredicateSchema,
+  TextFieldSchema,
+  BoolFieldSchema,
+  ApplicabilityRuleExpression,
+  Expression,
+  Predicate,
+  TextField,
+  BoolField,
+  expressionDepth,
+  APPLICABILITY_MAX_DEPTH,
+  APPLICABILITY_MAX_ARRAY_SIZE,
   // Conveniences
   z,
   SCHEMAS_VERSION,
 } from '@wyella/schemas';
 ```
 
-The parsers types describe the JSON shape produced by AMOS procedure ingestion (DOCX + PDF) and consumed by AMOS extraction. The shape is a 1:1 mirror of the prior in-engine TypeScript types — no Zod refinements have been applied. Refinements (e.g. `level: z.number().int().min(1).max(6)`) are deferred to a separate decision once parser invariants firm up in production.
+The **parsers** types describe the JSON shape produced by AMOS procedure ingestion (DOCX + PDF) and consumed by AMOS extraction. The shape is a 1:1 mirror of the prior in-engine TypeScript types — no Zod refinements have been applied. Refinements (e.g. `level: z.number().int().min(1).max(6)`) are deferred to a separate decision once parser invariants firm up in production.
+
+The **applicability** types describe the rule grammar AMOS operators author through the rule editor and which the PL/pgSQL `amos_applicability_rule_matches(expr, equip)` evaluator traverses against `amos.v_equipment` rows. Predicates (`equals`, `in`, `matches`, `equals_bool`, `all`) compose under `and` / `or` / `not` up to `APPLICABILITY_MAX_DEPTH` levels of nesting and `APPLICABILITY_MAX_ARRAY_SIZE` clauses or values per node. The grammar field set is probe-confirmed against `public.equipment` (DP-4): `equipment_class`, `area`, `criticality`, `operational_status` for text predicates; `safety_critical` for the boolean predicate. Future field additions extend the relevant enum and the PL/pgSQL evaluator branch in lockstep.
 
 ## Cross-repo consumption
 
@@ -59,6 +73,10 @@ src/
     index.ts               ParserFormat / ParsedSection / ParsedTable / ParsedDocument
     __tests__/
       parsers.test.ts      Good + bad samples; phantom-field strip test
+  applicability/
+    index.ts               ApplicabilityRuleExpression grammar (predicates + composites)
+    __tests__/
+      applicability.test.ts  Predicate variants, composites, depth + array-size bounds
   primitives/              (future) Uuid, Email, IsoDate, NonEmptyString, ...
   tenant/                  (future) CustomerId, SiteId, RoleCode, ...
   audit/                   (future) AuditEvent, ActorContext, ...
