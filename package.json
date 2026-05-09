@@ -1,6 +1,6 @@
 {
   "name": "@wyella/schemas",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "UNLICENSED",
   "description": "Shared Zod schemas substrate for the Wyella platform (OPE-139, OPE-153). AMOS first canonical consumer.",
   "main": "dist/index.js",
@@ -13,7 +13,7 @@
     "build": "tsc",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "test": "tsc && node --test dist/parsers/__tests__/parsers.test.js dist/applicability/__tests__/applicability.test.js",
+    "test": "tsc && node --test dist/parsers/__tests__/parsers.test.js dist/applicability/__tests__/applicability.test.js dist/control-health/__tests__/control-health.test.js dist/evidence/__tests__/evidence.test.js",
     "prepare": "tsc"
   },
   "dependencies": {
